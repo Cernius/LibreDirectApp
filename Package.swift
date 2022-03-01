@@ -21,8 +21,5 @@ let package = Package(
         .target(
             name: "LibreDirectApp",
             dependencies: []),
-        .testTarget(
-            name: "LibreDirectAppTests",
-            dependencies: ["LibreDirectApp"]),
     ]
 )
