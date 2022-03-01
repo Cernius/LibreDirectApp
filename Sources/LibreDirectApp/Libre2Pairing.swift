@@ -21,7 +21,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
     }
 
     // MARK: Internal
-    func readSensor() {
+    public func readSensor() {
         guard subject != nil else {
             logErrorAndDisconnect("Pairing, subject is nil")
             return
@@ -264,7 +264,7 @@ final class Libre2Pairing: NSObject {
 
     // MARK: Internal
 
-    func readSensor() {}
+    public func readSensor() {}
 }
 
 #endif
