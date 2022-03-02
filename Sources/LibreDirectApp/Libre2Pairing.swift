@@ -28,7 +28,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
             if NFCTagReaderSession.readingAvailable {
                 session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: nfcQueue)
                 if(session != nil ){
-                    print("good")
+                    print("session != nil")
                 }
                 session?.alertMessage = "Hold the top edge of your iPhone close to the sensor."
                 session?.begin()
@@ -50,6 +50,8 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
 
     @available(iOS 13.0, *)
     public func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
+        print("ateina")
+
         Task {
             print("3")
             guard let firstTag = tags.first else {
