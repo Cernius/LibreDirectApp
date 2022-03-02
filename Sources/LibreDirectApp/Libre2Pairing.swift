@@ -55,12 +55,12 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
         Task {
             print("3")
             guard let firstTag = tags.first else {
-                logErrorAndDisconnect("No tag found")
+                print("No tag found")
                 return
             }
 
             guard case .iso15693(let tag) = firstTag else {
-                logErrorAndDisconnect("No ISO15693 tag found")
+                print("No ISO15693 tag found")
                 return
             }
 
@@ -68,10 +68,11 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
                 if #available(iOS 15.0, *) {
                     try await session.connect(to: firstTag)
                 } else {
-                    // Fallback on earlier versions
+                    print("blogai")
                 }
+               
             } catch {
-                logErrorAndDisconnect("Failed to connect to tag")
+                print("Failed to connect to tag")
                 return
             }
 
