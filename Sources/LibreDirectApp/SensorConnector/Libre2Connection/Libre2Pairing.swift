@@ -39,7 +39,7 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
 
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
-        print(
+        
         if let readerError = error as? NFCReaderError, readerError.code != .readerSessionInvalidationErrorUserCanceled {
             session.invalidate(errorMessage: "Connection failure: \(readerError.localizedDescription)")
 
