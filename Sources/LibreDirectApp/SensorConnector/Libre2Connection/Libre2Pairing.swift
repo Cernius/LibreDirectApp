@@ -179,13 +179,15 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
                         session.invalidate()
 
                         guard streamingEnabled else {
-                            logErrorAndDisconnect("Streaming not enabled")
+                            print("Streaming not enabled")
                             return
                         }
+                        print("5")
 
                         self.subject?.send(.setConnectionState(connectionState: .disconnected))
+                        print("6")
                         self.subject?.send(.setSensor(sensor: sensor, wasPaired: true))
-
+                        print("7 sensor state = \(sensor.state)")
                         if sensor.state == .ready {
                             self.subject?.send(.addSensorReadings(sensorSerial: sensor.serial ?? "", trendReadings: sensorReadings.trend, historyReadings: sensorReadings.history))
                         }
