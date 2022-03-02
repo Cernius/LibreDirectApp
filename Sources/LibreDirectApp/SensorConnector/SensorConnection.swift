@@ -8,13 +8,14 @@ import CoreBluetooth
 import Foundation
 
 // MARK: - SensorConnection
-
+@available(iOS 13.0, *)
 protocol SensorConnection {
     var subject: PassthroughSubject<AppAction, AppError>? { get }
 }
 
 // MARK: - SensorBLEConnection
 
+@available(iOS 13.0, *)
 protocol SensorBLEConnection: SensorConnection {
     func pairSensor()
     func connectSensor(sensor: Sensor, sensorInterval: Int)
@@ -29,15 +30,16 @@ protocol IsSensor {}
 
 protocol IsTransmitter {}
 
+@available(iOS 13.0, *)
 extension SensorBLEConnection {
     func sendUpdate(connectionState: SensorConnectionState) {
-        AppLog.info("ConnectionState: \(connectionState.description)")
+        print("ConnectionState: \(connectionState.description)")
 
         subject?.send(.setConnectionState(connectionState: connectionState))
     }
 
     func sendUpdate(sensor: Sensor?, wasPaired: Bool = false) {
-        AppLog.info("Sensor: \(sensor?.description ?? "-")")
+        print("Sensor: \(sensor?.description ?? "-")")
 
         if let sensor = sensor {
             subject?.send(.setSensor(sensor: sensor, wasPaired: wasPaired))
@@ -47,19 +49,19 @@ extension SensorBLEConnection {
     }
 
     func sendUpdate(transmitter: Transmitter) {
-        AppLog.info("Transmitter: \(transmitter.description)")
+        print("Transmitter: \(transmitter.description)")
 
         subject?.send(.setTransmitter(transmitter: transmitter))
     }
 
     func sendUpdate(age: Int, state: SensorState) {
-        AppLog.info("SensorAge: \(age.description)")
+        print("SensorAge: \(age.description)")
 
         subject?.send(.setSensorState(sensorAge: age, sensorState: state))
     }
 
     func sendUpdate(sensorSerial: String, nextReading: SensorReading?) {
-        AppLog.info("NextReading: \(nextReading)")
+        print("NextReading: \(nextReading)")
 
         if let nextReading = nextReading {
             subject?.send(.addSensorReadings(sensorSerial: sensorSerial, trendReadings: [nextReading], historyReadings: []))
@@ -69,8 +71,8 @@ extension SensorBLEConnection {
     }
 
     func sendUpdate(sensorSerial: String, trendReadings: [SensorReading] = [], historyReadings: [SensorReading] = []) {
-        AppLog.info("SensorTrendReadings: \(trendReadings)")
-        AppLog.info("SensorHistoryReadings: \(historyReadings)")
+        print("SensorTrendReadings: \(trendReadings)")
+        print("SensorHistoryReadings: \(historyReadings)")
 
         if !trendReadings.isEmpty, !historyReadings.isEmpty {
             subject?.send(.addSensorReadings(sensorSerial: sensorSerial, trendReadings: trendReadings, historyReadings: historyReadings))
@@ -94,13 +96,13 @@ extension SensorBLEConnection {
     }
 
     func sendUpdate(errorMessage: String, errorIsCritical: Bool = false) {
-        AppLog.error("ErrorMessage: \(errorMessage)")
+        print("ErrorMessage: \(errorMessage)")
 
         subject?.send(.setConnectionError(errorMessage: errorMessage, errorTimestamp: Date(), errorIsCritical: false))
     }
 
     func sendMissedUpdate() {
-        AppLog.error("Missed update")
+        print("Missed update")
 
         subject?.send(.addMissedReading)
     }
@@ -149,5 +151,19 @@ private func translateError(_ errorCode: Int) -> String {
 
     default:
         return ""
+    }
+}
+private extension UserDefaults {
+    enum Keys: String {
+        case libre2UnlockCount = "libre-direct.libre2.unlock-count"
+    }
+
+    var libre2UnlockCount: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: Keys.libre2UnlockCount.rawValue)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: Keys.libre2UnlockCount.rawValue)
+        }
     }
 }

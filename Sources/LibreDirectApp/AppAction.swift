@@ -6,6 +6,7 @@
 import Foundation
 import OSLog
 
+@available(iOS 13.0, *)
 enum AppAction {
     case addCalibration(glucoseValue: Int)
     case addGlucoseValues(glucoseValues: [Glucose])
