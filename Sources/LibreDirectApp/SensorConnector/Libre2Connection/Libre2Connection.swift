@@ -14,7 +14,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     // MARK: Lifecycle
 
     init(subject: PassthroughSubject<AppAction, AppError>) {
-        AppLog.info("init")
+        print("init")
 
         super.init(subject: subject, serviceUUID: CBUUID(string: "FDE3"))
     }
@@ -26,7 +26,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     override func pairSensor() {
-        AppLog.info("PairSensor")
+        print("PairSensor")
 
         UserDefaults.standard.libre2UnlockCount = 0
 
@@ -49,7 +49,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     func unlock() -> Data? {
-        AppLog.info("Unlock, count: \(UserDefaults.standard.libre2UnlockCount)")
+        print("Unlock, count: \(UserDefaults.standard.libre2UnlockCount)")
 
         if sensor == nil {
             return nil
@@ -60,13 +60,13 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
 
         UserDefaults.standard.libre2UnlockCount = unlockCount
 
-        AppLog.info("Unlock done, count: \(UserDefaults.standard.libre2UnlockCount)")
+        print("Unlock done, count: \(UserDefaults.standard.libre2UnlockCount)")
 
         return Data(unlockPayload)
     }
 
     override func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
-        AppLog.info("Found peripheral: \(peripheral.name ?? "-")")
+        print("Found peripheral: \(peripheral.name ?? "-")")
         
         guard manager != nil else {
             AppLog.error("Guard: manager is nil")
@@ -77,8 +77,8 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
             return
         }
 
-        AppLog.info("Sensor: \(sensor)")
-        AppLog.info("ManufacturerData: \(manufacturerData)")
+        print("Sensor: \(sensor)")
+        print("ManufacturerData: \(manufacturerData)")
 
         if manufacturerData.count == 8 {
             var foundUUID = manufacturerData.subdata(in: 2 ..< 8)
@@ -93,13 +93,13 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        AppLog.info("Peripheral: \(peripheral)")
+        print("Peripheral: \(peripheral)")
 
         sendUpdate(error: error)
 
         if let services = peripheral.services {
             for service in services {
-                AppLog.info("Service Uuid: \(service.uuid)")
+                print("Service Uuid: \(service.uuid)")
 
                 peripheral.discoverCharacteristics([readCharacteristicUUID, writeCharacteristicUUID], for: service)
             }
@@ -107,13 +107,13 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        AppLog.info("Peripheral: \(peripheral)")
+        print("Peripheral: \(peripheral)")
 
         sendUpdate(error: error)
 
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
-                AppLog.info("Characteristic Uuid: \(characteristic.uuid.description)")
+                print("Characteristic Uuid: \(characteristic.uuid.description)")
 
                 if characteristic.uuid == readCharacteristicUUID {
                     readCharacteristic = characteristic
@@ -131,13 +131,13 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        AppLog.info("Peripheral: \(peripheral)")
+        print("Peripheral: \(peripheral)")
 
         sendUpdate(error: error)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        AppLog.info("Peripheral: \(peripheral)")
+        print("Peripheral: \(peripheral)")
 
         sendUpdate(error: error)
 
@@ -147,7 +147,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        AppLog.info("Peripheral: \(peripheral)")
+        print("Peripheral: \(peripheral)")
 
         sendUpdate(error: error)
 
@@ -163,10 +163,10 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
             thirdBuffer = value
         }
 
-        AppLog.info("Value: \(value.count)")
-        AppLog.info("First buffer: \(firstBuffer.count)")
-        AppLog.info("Second buffer: \(secondBuffer.count)")
-        AppLog.info("Third buffer: \(thirdBuffer.count)")
+        print("Value: \(value.count)")
+        print("First buffer: \(firstBuffer.count)")
+        print("Second buffer: \(secondBuffer.count)")
+        print("Third buffer: \(thirdBuffer.count)")
 
         if !firstBuffer.isEmpty, !secondBuffer.isEmpty, !thirdBuffer.isEmpty {
             let rxBuffer = firstBuffer + secondBuffer + thirdBuffer
@@ -198,7 +198,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
                         sendUpdate(age: parsedBLE.age, state: .starting)
                     }
                 } catch {
-                    AppLog.error("Cannot process BLE data: \(error.localizedDescription)")
+                    print("Cannot process BLE data: \(error.localizedDescription)")
                 }
             }
 
