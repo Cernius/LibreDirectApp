@@ -39,6 +39,7 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
 
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
+        print(
         if let readerError = error as? NFCReaderError, readerError.code != .readerSessionInvalidationErrorUserCanceled {
             session.invalidate(errorMessage: "Connection failure: \(readerError.localizedDescription)")
 
@@ -157,6 +158,7 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
                     print("parse sensor readings")
                     let sensorReadings = SensorUtility.parseFRAM(calibration: sensor.factoryCalibration, pairingTimestamp: sensor.pairingTimestamp, fram: sensor.fram!)
 
+                    print("sensor type: \(type)")
                     if type == .libre1 {
                         session.invalidate()
 
@@ -166,10 +168,14 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
                             self.subject?.send(.addSensorReadings(sensorSerial: sensor.serial ?? "", trendReadings: sensorReadings.trend, historyReadings: sensorReadings.history))
                         }
                     } else {
+                        print("1")
                         let streamingCmd = self.nfcCommand(.enableStreaming, unlockCode: self.unlockCode, patchInfo: patchInfo, sensorUID: sensorUID)
+                        print("2")
                         let streaminResponse = try await tag.customCommand(requestFlags: .highDataRate, customCommandCode: Int(streamingCmd.code), customRequestParameters: streamingCmd.parameters)
+                        print("3")
                         let streamingEnabled = streaminResponse.count == 6
 
+                        print("4")
                         session.invalidate()
 
                         guard streamingEnabled else {
