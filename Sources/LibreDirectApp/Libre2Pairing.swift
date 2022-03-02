@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-#if canImport(CoreNFC)
+//#if canImport(CoreNFC)
 import CoreNFC
 // MARK: - Libre2Pairing
 // padaryti public?
@@ -255,16 +255,16 @@ private enum Subcommand: UInt8, CustomStringConvertible {
         }
     }
 }
-
-#else
-final class Libre2Pairing: NSObject {
-    // MARK: Lifecycle
-
-    init() {}
-
-    // MARK: Internal
-
-    public func readSensor() {}
-}
-
-#endif
+//
+//#else
+//final class Libre2Pairing: NSObject {
+//    // MARK: Lifecycle
+//
+//    init() {}
+//
+//    // MARK: Internal
+//
+//    public func readSensor() {}
+//}
+//
+//#endif
