@@ -12,6 +12,7 @@ import Foundation
 // https://danielbernal.co/redux-like-architecture-with-swiftui-real-world-app/
 
 typealias Reducer<State, Action> = (inout State, Action) -> Void
+@available(iOS 13.0, *)
 typealias Middleware<State, Action> = (State, Action, State) -> AnyPublisher<Action, AppError>?
 
 // MARK: - AppError
@@ -22,6 +23,7 @@ enum AppError: Error {
 
 // MARK: - Store
 
+@available(iOS 13.0, *)
 final class Store<State, Action>: ObservableObject {
     // MARK: Lifecycle
 
@@ -40,6 +42,7 @@ final class Store<State, Action>: ObservableObject {
     let serialQueue = DispatchQueue(label: "libre-direct.store-queue")
     let middlewares: [Middleware<State, Action>]
 
+    @available(iOS 13.0, *)
     // The dispatch function.
     func dispatch(_ action: Action) {
         let lastState = state
@@ -50,23 +53,23 @@ final class Store<State, Action>: ObservableObject {
             guard let middleware = mw(state, action, lastState) else {
                 break
             }
-
-            middleware
-                .receive(on: DispatchQueue.main)
-                .sink(
-                    receiveCompletion: { completion in
-                        switch completion {
-                        case .failure(.withMessage(message: let message)):
-                            print(message)
-                        default:
-                            break
-                        }
-                    },
-                    receiveValue: dispatch
-                )
-                .store(in: &middlewareCancellables)
-        }
+                middleware
+                    .receive(on: DispatchQueue.main)
+                    .sink(
+                        receiveCompletion: { completion in
+                            switch completion {
+                            case .failure(.withMessage(message: let message)):
+                                print(message)
+                            default:
+                                break
+                            }
+                        },
+                        receiveValue: dispatch
+                    )
+                    .store(in: &middlewareCancellables)
+            }
     }
+    
 
     // MARK: Private
 

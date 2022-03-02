@@ -12,7 +12,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
 
     init(id: UUID, timestamp: Date, type: GlucoseValueType, quality: GlucoseQuality) {
         self.id = id
-//        self.timestamp = timestamp.toRounded(on: 1, .minute)
+        self.timestamp = timestamp.toRounded(on: 1, .minute)
 
         self.minuteChange = nil
         self.calibratedGlucoseValue = nil
@@ -23,7 +23,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
 
     init(id: UUID, timestamp: Date, glucose: Int, type: GlucoseValueType, quality: GlucoseQuality = .OK) {
         self.id = id
-//        self.timestamp = timestamp.toRounded(on: 1, .minute)
+        self.timestamp = timestamp.toRounded(on: 1, .minute)
 
         self.minuteChange = nil
 
@@ -41,7 +41,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
 
     init(id: UUID, timestamp: Date, minuteChange: Double?, initialGlucoseValue: Int, calibratedGlucoseValue: Int, type: GlucoseValueType, quality: GlucoseQuality = .OK) {
         self.id = id
-//        self.timestamp = timestamp.toRounded(on: 1, .minute)
+        self.timestamp = timestamp.toRounded(on: 1, .minute)
 
         self.minuteChange = minuteChange
 

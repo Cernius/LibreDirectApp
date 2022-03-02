@@ -10,14 +10,14 @@ final class SensorReading: CustomStringConvertible, Codable {
 
     init(id: UUID, timestamp: Date, quality: GlucoseQuality) {
         self.id = id
-//        self.timestamp = timestamp
+        self.timestamp = timestamp
         self.readGlucoseValue = nil
         self.quality = quality
     }
 
     init(id: UUID, timestamp: Date, glucoseValue: Double, quality: GlucoseQuality = .OK) {
         self.id = id
-//        self.timestamp = timestamp.toRounded(on: 1, .minute)
+        self.timestamp = timestamp.toRounded(on: 1, .minute)
 
         if quality == .OK {
             self.readGlucoseValue = glucoseValue
