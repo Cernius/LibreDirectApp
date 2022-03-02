@@ -23,6 +23,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
     public override init() {}
 
     public func readSensor() {
+        print("2")
        
             if NFCTagReaderSession.readingAvailable {
                 session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: nfcQueue)
@@ -46,6 +47,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
     @available(iOS 13.0, *)
     public func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
         Task {
+            print("3")
             guard let firstTag = tags.first else {
                 logErrorAndDisconnect("No tag found")
                 return
