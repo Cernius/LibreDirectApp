@@ -8,71 +8,59 @@
 import Combine
 import Foundation
 
-//#if canImport(CoreNFC)
+#if canImport(CoreNFC)
 import CoreNFC
+
 // MARK: - Libre2Pairing
 
-public protocol LibrePairing {
-    func readSensor()
-}
-
-@available(iOS 13.0, *)
-final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePairing {
+final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
     // MARK: Lifecycle
 
-    public override init() {}
-
-    public func readSensor() {
-        print("2")
-       
-            if NFCTagReaderSession.readingAvailable {
-                session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: nfcQueue)
-                if(session != nil ){
-                    print("session != nil")
-                }
-                session?.alertMessage = "Hold the top edge of your iPhone close to the sensor."
-                session?.begin()
-            }
+    init(subject: PassthroughSubject<AppAction, AppError>) {
+        self.subject = subject
     }
 
-    @available(iOS 13.0, *)
-    public func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
+    // MARK: Internal
 
-    @available(iOS 13.0, *)
-    public func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
-        print("4")
-            if let readerError = error as? NFCReaderError, readerError.code != .readerSessionInvalidationErrorUserCanceled {
-                session.invalidate(errorMessage: "Connection failure: \(readerError.localizedDescription)")
-                
-                logErrorAndDisconnect("Reader session didInvalidateWithError: \(readerError.localizedDescription))")
-            }
+    func readSensor() {
+        guard subject != nil else {
+            logErrorAndDisconnect("Pairing, subject is nil")
+            return
+        }
+
+        if NFCTagReaderSession.readingAvailable {
+            session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: nfcQueue)
+            session?.alertMessage = LocalizedString("Hold the top edge of your iPhone close to the sensor.")
+            session?.begin()
+        }
     }
 
-    @available(iOS 13.0, *)
-    public func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
-        print("ateina")
+    func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
 
+    func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
+        if let readerError = error as? NFCReaderError, readerError.code != .readerSessionInvalidationErrorUserCanceled {
+            session.invalidate(errorMessage: "Connection failure: \(readerError.localizedDescription)")
+
+            logErrorAndDisconnect("Reader session didInvalidateWithError: \(readerError.localizedDescription))")
+        }
+    }
+
+    func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
         Task {
-            print("3")
             guard let firstTag = tags.first else {
-                print("No tag found")
+                logErrorAndDisconnect("No tag found")
                 return
             }
 
             guard case .iso15693(let tag) = firstTag else {
-                print("No ISO15693 tag found")
+                logErrorAndDisconnect("No ISO15693 tag found")
                 return
             }
 
             do {
-                if #available(iOS 15.0, *) {
-                    try await session.connect(to: firstTag)
-                } else {
-                    print("blogai")
-                }
-               
+                try await session.connect(to: firstTag)
             } catch {
-                print("Failed to connect to tag")
+                logErrorAndDisconnect("Failed to connect to tag")
                 return
             }
 
@@ -105,11 +93,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
             var dataArray = [Data](repeating: Data(), count: blocks)
 
             for i in 0 ..< requests {
-                
-                if #available(iOS 14.0, *) {
-                    let requestFlags: NFCISO15693RequestFlag = [.highDataRate, .address]
-                
-                
+                let requestFlags: NFCISO15693RequestFlag = [.highDataRate, .address]
                 let blockRange = NSRange(UInt8(i * requestBlocks) ... UInt8(i * requestBlocks + (i == requests - 1 ? (remainder == 0 ? requestBlocks : remainder) : requestBlocks) - (requestBlocks > 1 ? 1 : 0)))
 
                 var failedRead: Bool
@@ -128,14 +112,14 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
                         failedRead = true
                     }
                 } while failedRead && failedRetries > 0
-                
+
                 if failedRead {
                     logErrorAndDisconnect("Failed to read multiple tags")
                     return
                 }
 
                 if i == requests - 1 {
-                    print("create fram")
+                    AppLog.info("create fram")
 
                     var fram = Data()
                     for (_, data) in dataArray.enumerated() {
@@ -149,28 +133,29 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
                         return
                     }
 
-                    print("create sensor")
+                    AppLog.info("create sensor")
                     let sensor = Sensor(uuid: sensorUID, patchInfo: patchInfo, fram: SensorUtility.decryptFRAM(uuid: sensorUID, patchInfo: patchInfo, fram: fram) ?? fram)
 
-                    print("sensor: \(sensor)")
-                    print("sensor, age: \(sensor.age)")
-                    print("sensor, lifetime: \(sensor.lifetime)")
+                    AppLog.info("sensor: \(sensor)")
+                    AppLog.info("sensor, age: \(sensor.age)")
+                    AppLog.info("sensor, lifetime: \(sensor.lifetime)")
 
                     guard sensor.state != .expired else {
-                        logErrorAndDisconnect("Scanned sensor expired", showToUser: true)
+                        logErrorAndDisconnect(LocalizedString("Scanned sensor expired"), showToUser: true)
 
                         return
                     }
 
-                    print("parse sensor readings")
+                    AppLog.info("parse sensor readings")
                     let sensorReadings = SensorUtility.parseFRAM(calibration: sensor.factoryCalibration, pairingTimestamp: sensor.pairingTimestamp, fram: sensor.fram!)
 
                     if type == .libre1 {
                         session.invalidate()
 
+                        self.subject?.send(.setSensor(sensor: sensor))
 
                         if sensor.state == .ready {
-                          print("ready")
+                            self.subject?.send(.addSensorReadings(sensorSerial: sensor.serial ?? "", trendReadings: sensorReadings.trend, historyReadings: sensorReadings.history))
                         }
                     } else {
                         let streamingCmd = self.nfcCommand(.enableStreaming, unlockCode: self.unlockCode, patchInfo: patchInfo, sensorUID: sensorUID)
@@ -184,29 +169,33 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
                             return
                         }
 
-                        print("was paired ")
-                        
+                        self.subject?.send(.setConnectionState(connectionState: .disconnected))
+                        self.subject?.send(.setSensor(sensor: sensor, wasPaired: true))
+
                         if sensor.state == .ready {
-                            print("state = ready")
+                            self.subject?.send(.addSensorReadings(sensorSerial: sensor.serial ?? "", trendReadings: sensorReadings.trend, historyReadings: sensorReadings.history))
                         }
                     }
                 }
-                }}
+            }
         }
     }
 
     // MARK: Private
 
     private var session: NFCTagReaderSession?
+    private weak var subject: PassthroughSubject<AppAction, AppError>?
+
     private let nfcQueue = DispatchQueue(label: "libre-direct.nfc-queue")
     private let unlockCode: UInt32 = 42
 
     private func logErrorAndDisconnect(_ message: String, showToUser: Bool = false) {
-        print(message)
+        AppLog.error(message)
 
         session?.invalidate()
 
-       
+        subject?.send(.setConnectionError(errorMessage: showToUser ? message : LocalizedString("Retry pairing"), errorTimestamp: Date(), errorIsCritical: false))
+        subject?.send(.setConnectionState(connectionState: .disconnected))
     }
 
     private func nfcCommand(_ code: Subcommand, unlockCode: UInt32, patchInfo: Data, sensorUID: Data) -> NFCCommand {
@@ -267,16 +256,17 @@ private enum Subcommand: UInt8, CustomStringConvertible {
         }
     }
 }
-//
-//#else
-//final class Libre2Pairing: NSObject {
-//    // MARK: Lifecycle
-//
-//    init() {}
-//
-//    // MARK: Internal
-//
-//    public func readSensor() {}
-//}
-//
-//#endif
+
+#else
+
+final class Libre2Pairing: NSObject {
+    // MARK: Lifecycle
+
+    init(subject: PassthroughSubject<AppAction, AppError>) {}
+
+    // MARK: Internal
+
+    func readSensor() {}
+}
+
+#endif
