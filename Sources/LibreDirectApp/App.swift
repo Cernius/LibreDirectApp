@@ -43,7 +43,7 @@ public class LibreActivationApp {
 
     // MARK: Private
 
-    private let store: AppStore
+    public let store: AppStore
     private let notificationCenterDelegate: UNUserNotificationCenterDelegate
 
     private static func createStore() -> AppStore {
