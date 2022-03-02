@@ -24,6 +24,11 @@ public class LibreActivationApp {
 
         store.dispatch(.startup)
     }
+    
+    
+    public func  startScan(){
+        store.dispatch(.pairSensor)
+    }
 
     deinit {
         UNUserNotificationCenter.current().delegate = nil
@@ -43,7 +48,7 @@ public class LibreActivationApp {
 
     // MARK: Private
 
-    public let store: AppStore
+    let store: AppStore
     private let notificationCenterDelegate: UNUserNotificationCenterDelegate
 
     private static func createStore() -> AppStore {
