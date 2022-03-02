@@ -8,16 +8,17 @@ import Foundation
 
 // MARK: - appReducer
 
+@available(iOS 13.0, *)
 func appReducer(state: inout AppState, action: AppAction) {
     switch action {
     case .addCalibration(glucoseValue: let glucoseValue):
         guard state.sensor != nil else {
-            AppLog.info("Guard: state.sensor is nil")
+            print("Guard: state.sensor is nil")
             break
         }
         
         guard let factoryCalibratedGlucoseValue = state.currentGlucose?.initialGlucoseValue else {
-            AppLog.info("Guard: state.currentGlucose.initialGlucoseValue is nil")
+            print("Guard: state.currentGlucose.initialGlucoseValue is nil")
             break
         }
         
@@ -47,7 +48,7 @@ func appReducer(state: inout AppState, action: AppAction) {
         
     case .clearCalibrations:
         guard state.sensor != nil else {
-            AppLog.info("Guard: state.sensor is nil")
+            print("Guard: state.sensor is nil")
             break
         }
         
@@ -73,7 +74,7 @@ func appReducer(state: inout AppState, action: AppAction) {
         
     case .removeCalibration(id: let id):
         guard state.sensor != nil else {
-            AppLog.info("Guard: state.sensor is nil")
+            print("Guard: state.sensor is nil")
             break
         }
         
@@ -132,7 +133,7 @@ func appReducer(state: inout AppState, action: AppAction) {
         }
         
         if !autosnooze {
-            NotificationService.shared.stopSound()
+//            NotificationService.shared.stopSound()
         }
         
     case .setAppleHealthExport(enabled: let enabled):
@@ -141,8 +142,7 @@ func appReducer(state: inout AppState, action: AppAction) {
     case .setBellmanNotification(enabled: let enabled):
         state.bellmanAlarm = enabled
         
-    case .setBellmanConnectionState(connectionState: let connectionState):
-        state.bellmanConnectionState = connectionState
+
         
     case .setAppleCalendarExport(enabled: let enabled):
         state.appleCalendarExport = enabled
@@ -152,9 +152,7 @@ func appReducer(state: inout AppState, action: AppAction) {
         
     case .setChartZoomLevel(level: let level):
         state.chartZoomLevel = level
-        
-    case .setConnectionAlarmSound(sound: let sound):
-        state.connectionAlarmSound = sound
+ 
         
     case .setConnectionError(errorMessage: let errorMessage, errorTimestamp: let errorTimestamp, errorIsCritical: let errorIsCritical):
         state.connectionError = errorMessage
@@ -169,24 +167,24 @@ func appReducer(state: inout AppState, action: AppAction) {
             state.connectionErrorIsCritical = false
             state.connectionErrorTimestamp = nil
         }
-        
-    case .setExpiringAlarmSound(sound: let sound):
-        state.expiringAlarmSound = sound
+//
+//    case .setExpiringAlarmSound(sound: let sound):
+//        state.expiringAlarmSound = sound
                
     case .setGlucoseBadge(enabled: let enabled):
         state.glucoseBadge = enabled
         
     case .setGlucoseUnit(unit: let unit):
         state.glucoseUnit = unit
-        
-    case .setHighGlucoseAlarmSound(sound: let sound):
-        state.highGlucoseAlarmSound = sound
+//
+//    case .setHighGlucoseAlarmSound(sound: let sound):
+//        state.highGlucoseAlarmSound = sound
         
     case .setIgnoreMute(enabled: let enabled):
         state.ignoreMute = enabled
         
-    case .setLowGlucoseAlarmSound(sound: let sound):
-        state.lowGlucoseAlarmSound = sound
+//    case .setLowGlucoseAlarmSound(sound: let sound):
+//        state.lowGlucoseAlarmSound = sound
 
     case .setNightscoutSecret(apiSecret: let apiSecret):
         state.nightscoutApiSecret = apiSecret
@@ -205,7 +203,7 @@ func appReducer(state: inout AppState, action: AppAction) {
             state.customCalibration = []
             
             // reset store peripheral uuid
-            UserDefaults.standard.sensorPeripheralUUID = nil
+//            UserDefaults.standard.sensorPeripheralUUID = nil
         }
         
         state.sensor = sensor
@@ -219,7 +217,7 @@ func appReducer(state: inout AppState, action: AppAction) {
 
     case .setSensorState(sensorAge: let sensorAge, sensorState: let sensorState):
         guard state.sensor != nil else {
-            AppLog.info("Guard: state.sensor is nil")
+            print("Guard: state.sensor is nil")
             break
         }
         

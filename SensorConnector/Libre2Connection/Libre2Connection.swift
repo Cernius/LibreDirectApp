@@ -10,6 +10,7 @@ import LibreDirectApp
 
 // MARK: - Libre2Connection
 
+@available(iOS 13.0, *)
 final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
     // MARK: Lifecycle
 
@@ -69,7 +70,7 @@ final class Libre2Connection: SensorBLEConnectionBase, IsSensor {
         print("Found peripheral: \(peripheral.name ?? "-")")
         
         guard manager != nil else {
-            AppLog.error("Guard: manager is nil")
+            print("Guard: manager is nil")
             return
         }
 

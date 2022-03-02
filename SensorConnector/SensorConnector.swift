@@ -6,10 +6,11 @@
 import Combine
 import Foundation
 
+@available(iOS 13.0, *)
 func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo]) -> Middleware<AppState, AppAction> {
     return sensorConnectorMiddelware(infos, subject: PassthroughSubject<AppAction, AppError>(), calibrationService: CalibrationService())
 }
-
+@available(iOS 13.0, *)
 private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject: PassthroughSubject<AppAction, AppError>, calibrationService: CalibrationService) -> Middleware<AppState, AppAction> {
     return { state, action, _ in
         switch action {
@@ -18,15 +19,15 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
             var selectConnection: Just<AppAction>?
 
             if let id = state.selectedConnectionID, let connectionInfo = infos.first(where: { $0.id == id }) {
-                AppLog.info("Select startup connection: \(connectionInfo.name)")
+                print("Select startup connection: \(connectionInfo.name)")
                 selectConnection = Just(.selectConnection(id: connectionInfo.id, connection: connectionInfo.connectionCreator(subject)))
 
             } else if infos.count == 1, let connectionInfo = infos.first {
-                AppLog.info("Select single startup connection: \(connectionInfo.name)")
+                print("Select single startup connection: \(connectionInfo.name)")
                 selectConnection = Just(.selectConnection(id: connectionInfo.id, connection: connectionInfo.connectionCreator(subject)))
 
             } else if let connectionInfo = infos.first {
-                AppLog.info("Select first startup connection: \(connectionInfo.name)")
+                print("Select first startup connection: \(connectionInfo.name)")
                 selectConnection = Just(.selectConnection(id: connectionInfo.id, connection: connectionInfo.connectionCreator(subject)))
             }
 
@@ -109,7 +110,7 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
 
         case .pairSensor:
             guard let sensorConnection = state.selectedConnection else {
-                AppLog.info("Guard: state.selectedConnection is nil")
+                print("Guard: state.selectedConnection is nil")
                 break
             }
 
@@ -126,7 +127,7 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
 
         case .connectSensor:
             guard let sensorConnection = state.selectedConnection else {
-                AppLog.info("Guard: state.selectedConnection is nil")
+                print("Guard: state.selectedConnection is nil")
                 break
             }
 
@@ -138,7 +139,7 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
 
         case .disconnectSensor:
             guard let sensorConnection = state.selectedConnection else {
-                AppLog.info("Guard: state.selectedConnection is nil")
+                print("Guard: state.selectedConnection is nil")
                 break
             }
 
@@ -146,7 +147,7 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
 
         case .setSensor(sensor: _, wasPaired: let wasPaired):
             guard wasPaired && state.isConnectable else {
-                AppLog.info("Guard: sensor was not paired, no auto connect")
+                print("Guard: sensor was not paired, no auto connect")
                 break
             }
 
@@ -161,14 +162,16 @@ private func sensorConnectorMiddelware(_ infos: [SensorConnectionInfo], subject:
         return Empty().eraseToAnyPublisher()
     }
 }
-
+@available(iOS 13.0, *)
 typealias SensorConnectionCreator = (PassthroughSubject<AppAction, AppError>) -> SensorBLEConnection
 
 // MARK: - SensorConnectionInfo
 
+@available(iOS 13.0, *)
 class SensorConnectionInfo: Identifiable {
     // MARK: Lifecycle
 
+    @available(iOS 13.0, *)
     init(id: String, name: String, connectionCreator: @escaping SensorConnectionCreator) {
         self.id = id
         self.name = name

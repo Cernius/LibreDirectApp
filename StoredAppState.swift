@@ -13,7 +13,40 @@ import UserNotifications
 
 // MARK: - UserDefaultsState
 
+@available(iOS 13.0, *)
 struct UserDefaultsState: AppState {
+    var customCalibration: [CustomCalibration]
+    
+    var glucoseBadge: Bool
+    
+    var glucoseUnit: GlucoseUnit
+    
+    var glucoseValues: [Glucose]
+    
+    var isPaired: Bool
+    
+    var ignoreMute: Bool
+    
+    var nightscoutApiSecret: String
+    
+    var nightscoutUpload: Bool
+    
+    var nightscoutURL: String
+    
+    var readGlucose: Bool
+    
+    var selectedCalendarTarget: String?
+    
+    var selectedConnectionID: String?
+    
+    var selectedView: Int
+    
+    var sensor: Sensor?
+    
+    var sensorInterval: Int
+    
+    var transmitter: Transmitter?
+    
     // MARK: Lifecycle
 
     init() {
@@ -26,7 +59,7 @@ struct UserDefaultsState: AppState {
         #else
             defaultConnectionID = "bubble"
         #endif
-
+    
         if let alarmHigh = UserDefaults.standard.alarmHigh {
             self.alarmHigh = alarmHigh
         }
@@ -56,17 +89,17 @@ struct UserDefaultsState: AppState {
         self.sensor = UserDefaults.standard.sensor
         self.sensorInterval = UserDefaults.standard.sensorInterval
         self.transmitter = UserDefaults.standard.transmitter
-        self.connectionAlarmSound = UserDefaults.standard.connectionAlarmSound
-        self.expiringAlarmSound = UserDefaults.standard.expiringAlarmSound
-        self.highGlucoseAlarmSound = UserDefaults.standard.highGlucoseAlarmSound
-        self.lowGlucoseAlarmSound = UserDefaults.standard.lowGlucoseAlarmSound
+//        self.connectionAlarmSound = UserDefaults.standard.connectionAlarmSound
+//        self.expiringAlarmSound = UserDefaults.standard.expiringAlarmSound
+//        self.highGlucoseAlarmSound = UserDefaults.standard.highGlucoseAlarmSound
+//        self.lowGlucoseAlarmSound = UserDefaults.standard.lowGlucoseAlarmSound
+    
     }
-
     // MARK: Internal
 
     var alarmSnoozeUntil: Date?
 
-    var bellmanConnectionState: BellmanConnectionState = .disconnected
+//    var bellmanConnectionState: BellmanConnectionState = .disconnected
 
     var connectionError: String?
 
@@ -86,163 +119,163 @@ struct UserDefaultsState: AppState {
 
     var appleCalendarExport: Bool = false {
         didSet {
-            UserDefaults.standard.appleCalendarExport = appleCalendarExport
+//            UserDefaults.standard.appleCalendarExport = appleCalendarExport
         }
     }
 
     var appleHealthExport = false {
         didSet {
-            UserDefaults.standard.appleHealthExport = appleHealthExport
+//            UserDefaults.standard.appleHealthExport = appleHealthExport
         }
     }
 
     var alarmHigh: Int = 160 {
         didSet {
-            UserDefaults.standard.alarmHigh = alarmHigh
+//            UserDefaults.standard.alarmHigh = alarmHigh
         }
     }
 
     var alarmLow: Int = 80 {
         didSet {
-            UserDefaults.standard.alarmLow = alarmLow
+//            UserDefaults.standard.alarmLow = alarmLow
         }
     }
 
     var bellmanAlarm = false {
         didSet {
-            UserDefaults.standard.bellmanAlarm = bellmanAlarm
+//            UserDefaults.standard.bellmanAlarm = bellmanAlarm
         }
     }
 
     var chartShowLines: Bool {
         didSet {
-            UserDefaults.standard.chartShowLines = chartShowLines
+//            UserDefaults.standard.chartShowLines = chartShowLines
         }
     }
 
     var chartZoomLevel: Int {
         didSet {
-            UserDefaults.standard.chartZoomLevel = chartZoomLevel
+//            UserDefaults.standard.chartZoomLevel = chartZoomLevel
         }
     }
-
-    var connectionAlarmSound: NotificationSound {
-        didSet {
-            UserDefaults.standard.connectionAlarmSound = connectionAlarmSound
-        }
-    }
-
-    var customCalibration: [CustomCalibration] {
-        didSet {
-            UserDefaults.standard.customCalibration = customCalibration
-        }
-    }
-
-    var expiringAlarmSound: NotificationSound {
-        didSet {
-            UserDefaults.standard.expiringAlarmSound = expiringAlarmSound
-        }
-    }
-
-    var glucoseBadge: Bool {
-        didSet {
-            UserDefaults.standard.glucoseBadge = glucoseBadge
-        }
-    }
-
-    var glucoseUnit: GlucoseUnit {
-        didSet {
-            UserDefaults.standard.glucoseUnit = glucoseUnit
-        }
-    }
-
-    var glucoseValues: [Glucose] {
-        didSet {
-            UserDefaults.standard.glucoseValues = glucoseValues
-        }
-    }
-
-    var highGlucoseAlarmSound: NotificationSound {
-        didSet {
-            UserDefaults.standard.highGlucoseAlarmSound = highGlucoseAlarmSound
-        }
-    }
-
-    var ignoreMute: Bool {
-        didSet {
-            UserDefaults.standard.ignoreMute = ignoreMute
-        }
-    }
-
-    var isPaired: Bool {
-        didSet {
-            UserDefaults.standard.isPaired = isPaired
-        }
-    }
-
-    var lowGlucoseAlarmSound: NotificationSound {
-        didSet {
-            UserDefaults.standard.lowGlucoseAlarmSound = lowGlucoseAlarmSound
-        }
-    }
-
-    var nightscoutApiSecret: String {
-        didSet {
-            UserDefaults.standard.nightscoutApiSecret = nightscoutApiSecret
-        }
-    }
-
-    var nightscoutURL: String {
-        didSet {
-            UserDefaults.standard.nightscoutURL = nightscoutURL
-        }
-    }
-
-    var nightscoutUpload: Bool {
-        didSet {
-            UserDefaults.standard.nightscoutUpload = nightscoutUpload
-        }
-    }
-
-    var readGlucose: Bool {
-        didSet {
-            UserDefaults.standard.readGlucose = readGlucose
-        }
-    }
-
-    var selectedCalendarTarget: String? {
-        didSet {
-            UserDefaults.standard.selectedCalendarTarget = selectedCalendarTarget
-        }
-    }
-
-    var selectedConnectionID: String? {
-        didSet {
-            UserDefaults.standard.selectedConnectionID = selectedConnectionID
-        }
-    }
-
-    var selectedView: Int {
-        didSet {
-            UserDefaults.standard.selectedView = selectedView
-        }
-    }
-
-    var sensor: Sensor? {
-        didSet {
-            UserDefaults.standard.sensor = sensor
-        }
-    }
-
-    var sensorInterval: Int {
-        didSet {
-            UserDefaults.standard.sensorInterval = sensorInterval
-        }
-    }
-
-    var transmitter: Transmitter? {
-        didSet {
-            UserDefaults.standard.transmitter = transmitter
-        }
-    }
+//
+//    var connectionAlarmSound: NotificationSound {
+//        didSet {
+////            UserDefaults.standard.connectionAlarmSound = connectionAlarmSound
+//        }
+//    }
+//
+//    var customCalibration: [CustomCalibration] {
+//        didSet {
+//            UserDefaults.standard.customCalibration = customCalibration
+//        }
+//    }
+//
+//    var expiringAlarmSound: NotificationSound {
+//        didSet {
+//            UserDefaults.standard.expiringAlarmSound = expiringAlarmSound
+//        }
+//    }
+//
+//    var glucoseBadge: Bool {
+//        didSet {
+//            UserDefaults.standard.glucoseBadge = glucoseBadge
+//        }
+//    }
+//
+//    var glucoseUnit: GlucoseUnit {
+//        didSet {
+//            UserDefaults.standard.glucoseUnit = glucoseUnit
+//        }
+//    }
+//
+//    var glucoseValues: [Glucose] {
+//        didSet {
+//            UserDefaults.standard.glucoseValues = glucoseValues
+//        }
+//    }
+//
+//    var highGlucoseAlarmSound: NotificationSound {
+//        didSet {
+//            UserDefaults.standard.highGlucoseAlarmSound = highGlucoseAlarmSound
+//        }
+//    }
+//
+//    var ignoreMute: Bool {
+//        didSet {
+//            UserDefaults.standard.ignoreMute = ignoreMute
+//        }
+//    }
+//
+//    var isPaired: Bool {
+//        didSet {
+//            UserDefaults.standard.isPaired = isPaired
+//        }
+//    }
+//
+//    var lowGlucoseAlarmSound: NotificationSound {
+//        didSet {
+//            UserDefaults.standard.lowGlucoseAlarmSound = lowGlucoseAlarmSound
+//        }
+//    }
+//
+//    var nightscoutApiSecret: String {
+//        didSet {
+//            UserDefaults.standard.nightscoutApiSecret = nightscoutApiSecret
+//        }
+//    }
+//
+//    var nightscoutURL: String {
+//        didSet {
+//            UserDefaults.standard.nightscoutURL = nightscoutURL
+//        }
+//    }
+//
+//    var nightscoutUpload: Bool {
+//        didSet {
+//            UserDefaults.standard.nightscoutUpload = nightscoutUpload
+//        }
+//    }
+//
+//    var readGlucose: Bool {
+//        didSet {
+//            UserDefaults.standard.readGlucose = readGlucose
+//        }
+//    }
+//
+//    var selectedCalendarTarget: String? {
+//        didSet {
+//            UserDefaults.standard.selectedCalendarTarget = selectedCalendarTarget
+//        }
+//    }
+//
+//    var selectedConnectionID: String? {
+//        didSet {
+//            UserDefaults.standard.selectedConnectionID = selectedConnectionID
+//        }
+//    }
+//
+//    var selectedView: Int {
+//        didSet {
+//            UserDefaults.standard.selectedView = selectedView
+//        }
+//    }
+//
+//    var sensor: Sensor? {
+//        didSet {
+//            UserDefaults.standard.sensor = sensor
+//        }
+//    }
+//
+//    var sensorInterval: Int {
+//        didSet {
+//            UserDefaults.standard.sensorInterval = sensorInterval
+//        }
+//    }
+//
+//    var transmitter: Transmitter? {
+//        didSet {
+//            UserDefaults.standard.transmitter = transmitter
+//        }
+//    }
 }
