@@ -16,7 +16,7 @@ import SwiftUI
 public class LibreActivationApp {
     // MARK: Lifecycle
 
-    init() {
+    public init() {
         store = LibreActivationApp.createStore()
 
         notificationCenterDelegate = LibreDirectNotificationCenter(store: store)
