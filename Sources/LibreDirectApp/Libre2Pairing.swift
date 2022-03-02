@@ -11,10 +11,13 @@ import Foundation
 //#if canImport(CoreNFC)
 import CoreNFC
 // MARK: - Libre2Pairing
-// padaryti public?
+
+public protocol LibrePairing {
+    func readSensor()
+}
 
 @available(iOS 13.0, *)
-final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
+final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePairing {
     // MARK: Lifecycle
 
     public override init() {}
