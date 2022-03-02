@@ -10,17 +10,18 @@ import Foundation
 
 #if canImport(CoreNFC)
 import CoreNFC
-// MARK: - Libre2Pairing
-// padaryti public?
 
-final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
+// MARK: - Libre2Pairing
+
+final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
     // MARK: Lifecycle
 
-    public init(subject: PassthroughSubject<AppAction, AppError>) {
+    init(subject: PassthroughSubject<AppAction, AppError>) {
         self.subject = subject
     }
 
     // MARK: Internal
+
     func readSensor() {
         guard subject != nil else {
             logErrorAndDisconnect("Pairing, subject is nil")
@@ -257,6 +258,7 @@ private enum Subcommand: UInt8, CustomStringConvertible {
 }
 
 #else
+
 final class Libre2Pairing: NSObject {
     // MARK: Lifecycle
 
