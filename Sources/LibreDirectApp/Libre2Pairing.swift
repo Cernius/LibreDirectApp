@@ -27,6 +27,9 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
        
             if NFCTagReaderSession.readingAvailable {
                 session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: nfcQueue)
+                if(session != nil ){
+                    print("good")
+                }
                 session?.alertMessage = "Hold the top edge of your iPhone close to the sensor."
                 session?.begin()
             }
@@ -37,6 +40,7 @@ final public class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate, LibrePa
 
     @available(iOS 13.0, *)
     public func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
+        print("4")
             if let readerError = error as? NFCReaderError, readerError.code != .readerSessionInvalidationErrorUserCanceled {
                 session.invalidate(errorMessage: "Connection failure: \(readerError.localizedDescription)")
                 
