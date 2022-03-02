@@ -10,14 +10,14 @@ import SwiftUI
     import CoreNFC
 #endif
 
-// MARK: - LibreDirectApp
+// MARK: - LibreActivationApp
 
 @available(iOS 14.0, *)
-public class LibreDirectApp {
+public class LibreActivationApp {
     // MARK: Lifecycle
 
     init() {
-        store = LibreDirectApp.createStore()
+        store = LibreActivationApp.createStore()
 
         notificationCenterDelegate = LibreDirectNotificationCenter(store: store)
         UNUserNotificationCenter.current().delegate = notificationCenterDelegate
@@ -39,7 +39,6 @@ public class LibreDirectApp {
         #endif
     }
 
-    @UIApplicationDelegateAdaptor(LibreDirectAppDelegate.self) var delegate
 
 
     // MARK: Private
