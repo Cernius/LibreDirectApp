@@ -90,7 +90,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
         } else if calibratedGlucoseValue > AppConfig.maxReadableGlucose {
             return AppConfig.maxReadableGlucose
         }
-        sessionLog += "\(calibratedGlucoseValue)"
+        sessionLog += "\(calibratedGlucoseValue), "
         print("sessionLog: \(sessionLog)")
         readingsSubject.send(sessionLog)
         return calibratedGlucoseValue

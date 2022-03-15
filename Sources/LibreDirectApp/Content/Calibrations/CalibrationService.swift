@@ -34,6 +34,9 @@ class CalibrationService {
                 type: .cgm,
                 quality: nextReading.quality
             )
+            
+            print("currentGlucose: \(currentGlucose)")
+            print("nextGlucose: \(nextGlucose)")
 
             return nextGlucose
         }
