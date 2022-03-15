@@ -9,16 +9,18 @@ import Foundation
 
 final class Glucose: CustomStringConvertible, Codable, Identifiable {
     // MARK: Lifecycle
-
+    private var sessionLog = ""
+    private var readingsSubject = PassthroughSubject<String, Never>()
+    
     init(id: UUID, timestamp: Date, type: GlucoseValueType, quality: GlucoseQuality) {
         self.id = id
         self.timestamp = timestamp.toRounded(on: 1, .minute)
-
         self.minuteChange = nil
         self.calibratedGlucoseValue = nil
         self.initialGlucoseValue = nil
         self.type = type
         self.quality = quality
+        self.sessionLog = ""
     }
 
     init(id: UUID, timestamp: Date, glucose: Int, type: GlucoseValueType, quality: GlucoseQuality = .OK) {
@@ -85,7 +87,8 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
         } else if calibratedGlucoseValue > AppConfig.maxReadableGlucose {
             return AppConfig.maxReadableGlucose
         }
-
+        self.sessionLog += "\(calibratedGlucoseValue)"
+        readingsSubject.send(sessionLog)
         return calibratedGlucoseValue
     }
 

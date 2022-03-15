@@ -28,6 +28,8 @@ public class LibreActivationApp {
     
     public func  startScan(){
         store.dispatch(.pairSensor)
+        
+        
     }
 
     deinit {

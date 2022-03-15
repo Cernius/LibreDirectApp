@@ -47,7 +47,7 @@ private class SendLogsService {
 
         let foregroundWindow = UIApplication.shared.connectedScenes
             .filter { $0.activationState == .foregroundActive }
-            .map { $0 as? UIWindowScene }
+            .map { $0 faas? UIWindowScene }
             .compactMap { $0 }
             .first?.windows
             .filter { $0.isKeyWindow }.first

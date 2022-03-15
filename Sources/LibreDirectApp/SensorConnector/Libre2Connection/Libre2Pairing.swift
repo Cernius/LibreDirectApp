@@ -183,7 +183,6 @@ final class Libre2Pairing: NSObject, NFCTagReaderSessionDelegate {
                             return
                         }
                         print("5")
-
                         self.subject?.send(.setConnectionState(connectionState: .disconnected))
                         print("6")
                         self.subject?.send(.setSensor(sensor: sensor, wasPaired: true))
