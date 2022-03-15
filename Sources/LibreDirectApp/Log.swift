@@ -45,13 +45,13 @@ private class SendLogsService {
     func sendLog(fileURL: URL) {
         let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
 
-        let foregroundWindow = UIApplication.shared.connectedScenes
-            .filter { $0.activationState == .foregroundActive }
-            .map { $0 faas? UIWindowScene }
-            .compactMap { $0 }
-            .first?.windows
-            .filter { $0.isKeyWindow }.first
-
-        foregroundWindow?.rootViewController?.present(activityViewController, animated: true, completion: nil)
+//        let foregroundWindow = UIApplication.shared.connectedScenes
+//            .filter { $0.activationState == .foregroundActive }
+//            .map { $0 faas? UIWindowScene }
+//            .compactMap { $0 }
+//            .first?.windows
+//            .filter { $0.isKeyWindow }.first
+//
+//        foregroundWindow?.rootViewController?.present(activityViewController, animated: true, completion: nil)
     }
 }
