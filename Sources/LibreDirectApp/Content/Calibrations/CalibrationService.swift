@@ -7,6 +7,7 @@ import Foundation
 
 // MARK: - CalibrationService
 
+@available(iOS 13.0, *)
 class CalibrationService {
     // MARK: Internal
 

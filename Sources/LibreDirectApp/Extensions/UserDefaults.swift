@@ -39,6 +39,7 @@ private enum Keys: String {
     case devicePeripheralUUID = "libre-direct.sensor-ble-connection.peripheral-uuid"
 }
 
+@available(iOS 13.0, *)
 extension UserDefaults {
     var sensorPeripheralUUID: String? {
         get {

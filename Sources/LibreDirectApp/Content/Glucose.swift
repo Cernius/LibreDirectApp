@@ -5,15 +5,18 @@
 
 import Foundation
 import Combine
+public var sessionLog = ""
 
+@available(iOS 13.0, *)
+private var readingsSubject = PassthroughSubject<String, Never>()
 // MARK: - Glucose
 @available(iOS 13.0, *)
 final class Glucose: CustomStringConvertible, Codable, Identifiable {
     // MARK: Lifecycle
-    private var sessionLog = ""
-    private var readingsSubject = PassthroughSubject<String, Never>()
+ 
     
     init(id: UUID, timestamp: Date, type: GlucoseValueType, quality: GlucoseQuality) {
+        
         self.id = id
         self.timestamp = timestamp.toRounded(on: 1, .minute)
         self.minuteChange = nil
@@ -21,7 +24,6 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
         self.initialGlucoseValue = nil
         self.type = type
         self.quality = quality
-        self.sessionLog = ""
     }
 
     init(id: UUID, timestamp: Date, glucose: Int, type: GlucoseValueType, quality: GlucoseQuality = .OK) {
@@ -88,7 +90,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
         } else if calibratedGlucoseValue > AppConfig.maxReadableGlucose {
             return AppConfig.maxReadableGlucose
         }
-        self.sessionLog += "\(calibratedGlucoseValue)"
+        sessionLog += "\(calibratedGlucoseValue)"
         readingsSubject.send(sessionLog)
         return calibratedGlucoseValue
     }
@@ -107,6 +109,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
     }
 }
 
+@available(iOS 13.0, *)
 extension Glucose {
     var is5Minutely: Bool {
         let minutes = Calendar.current.component(.minute, from: timestamp)
