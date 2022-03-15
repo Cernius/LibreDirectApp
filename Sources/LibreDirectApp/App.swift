@@ -26,10 +26,9 @@ public class LibreActivationApp {
     }
     
     
-    public func  startScan(){
+    public func  startScan() -> String{
         store.dispatch(.pairSensor)
-        
-        
+        return sessionLog;
     }
 
     deinit {
