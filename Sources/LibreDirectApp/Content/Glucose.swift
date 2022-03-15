@@ -91,6 +91,7 @@ final class Glucose: CustomStringConvertible, Codable, Identifiable {
             return AppConfig.maxReadableGlucose
         }
         sessionLog += "\(calibratedGlucoseValue)"
+        log("sessionLog: \(sessionLog)")
         readingsSubject.send(sessionLog)
         return calibratedGlucoseValue
     }
