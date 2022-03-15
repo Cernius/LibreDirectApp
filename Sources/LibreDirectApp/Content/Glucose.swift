@@ -7,7 +7,7 @@ import Foundation
 import Combine
 
 // MARK: - Glucose
-
+@available(iOS 13.0, *)
 final class Glucose: CustomStringConvertible, Codable, Identifiable {
     // MARK: Lifecycle
     private var sessionLog = ""
