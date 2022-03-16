@@ -29,10 +29,16 @@ public class LibreActivationApp {
     public func  startScan() -> String{
         store.dispatch(.pairSensor)
         
-        let values = store.state.glucoseValues
-        let stringas = "sessionlog: \(sessionLog) \(values)";
-        print(stringas)
-        return stringas;
+        if let currentGlucose = store.state.currentGlucose{
+            let stringas = "sessionlog: \(sessionLog) \(currentGlucose)";
+            print(stringas)
+            return stringas;
+        }
+        
+        
+        return "";
+            
+        
     }
 
     deinit {
@@ -52,6 +58,10 @@ public class LibreActivationApp {
 
 
     // MARK: Private
+    
+    func getStore() -> AppStore{
+        return self.store
+    }
 
     let store: AppStore
     private let notificationCenterDelegate: UNUserNotificationCenterDelegate
