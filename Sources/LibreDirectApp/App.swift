@@ -28,7 +28,9 @@ public class LibreActivationApp {
     
     public func  startScan() -> String{
         store.dispatch(.pairSensor)
-        return sessionLog;
+        
+        let values = store.state.glucoseValues
+        return "sessionlog: \(sessionLog) \(values)";
     }
 
     deinit {
