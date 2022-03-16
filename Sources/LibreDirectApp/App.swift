@@ -30,7 +30,9 @@ public class LibreActivationApp {
         store.dispatch(.pairSensor)
         
         let values = store.state.glucoseValues
-        return "sessionlog: \(sessionLog) \(values)";
+        let stringas = "sessionlog: \(sessionLog) \(values)";
+        print(stringas)
+        return stringas;
     }
 
     deinit {
